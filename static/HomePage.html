@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
+    <title>Movie Search</title>
+</head>
+<body>
+    <div class="title_container"><b>THE MOVIE DB</b></div>
+        <div class="leftpage">
+        <div class ="toggle1" id= "toggle1" onclick="Home()" style="cursor:pointer;">
+            <span class ="homeToggle" style ="color:#ab0b09"><b>Home</b></span>
+            <span class ="homeToggle arrow" style ="color:#ab0b09">&#10230;</span>
+        </div>
+        <br>
+        <div class ="toggle2" id= "toggle2"  onclick="Search()" style="cursor:pointer;">
+            <span class ="searchToggle"><b>Search</b></span>
+            <span class ="searchToggle arrow">&#10230;</span>
+        </div>
+    </div>
+
+    <div class="rightpage_home" id="rightpage_home" style="display: block">
+        <div class ="slideshow">
+            <p class="trendingtitle">Trending Movies</p>
+            <img id="container_trending" src="">
+            <div class ="bottom">
+                <div id="topText_trending"></div>
+            </div>
+        </div>
+        <div id="divider"> </div>
+        <div class ="slideshow">
+            <p class ="trendingtitle">TV-Shows On-Air Today</p>
+            <img id="container_airing" src="">
+            <div class ="bottom">
+                <div id="topText_airing"></div>
+            </div>
+        </div>
+        <div class="footer-1">
+            <p class="firstline">Designed and developed by Wei Zhang</p>
+            <p class="secondline">Powered by TMDB</p>
+        </div>
+    </div>
+
+    <div class="rightpage_search" id="rightpage_search" style="display: none">
+        <div id ="Search">
+            <p id="search-font"><strong>Search</strong></p>
+            <form name ="form", id="myForm">
+                <label class="required" id ="keytext">Keyword</label>
+                <input type="text" id="keyword" name="keyword" required><br><br>
+                <label class="required" id ="cattext">Category</label>
+                <select id="Category" name="Category">
+                    <option value="none"> &nbsp &nbsp</option>
+                    <option value="mv">Movies</option>
+                    <option value="tv">TV Shows</option>
+                    <option value="both">Movies and TV Shows</option>
+                </select><br><br>
+                <div class="button">
+                    <input class = "searchBtn" type="submit" id="submit" value="Search" onclick="emptyAlert(),sendSearchQuery()" >
+                    <input class = "clearBtn" type="button" id="clear" value="Clear" onclick="ClearBtn()">
+                </div>
+            </form>
+        </div>
+        <div id ="showresults" style="display: none"><p>Showing results...</p></div>
+        <div id ="notfound" style="display: none"><p>No results found.</p></div>
+        <div id =empty></div>
+        <div class="search_results" id="search_results">
+<!--            <div class ="result" id ="result">-->
+<!--                <div class="result_pic">-->
+<!--                   <img id="img00" src="">-->
+<!--                </div>-->
+<!--                <div class="result_description" id="result_description">-->
+<!--                    <div class="Name" id ="Name"></div>-->
+<!--                    <div class="YearAndType" id="YearAndType"></div>-->
+<!--                    <div class="Review" id ="Review"></div>-->
+<!--                    <div class="Detail" id ="Detail"></div>-->
+<!--                    <div class="More">Show more</div>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+        <div class="footer-2">
+            <p class="firstline">Designed and developed by Wei Zhang</p>
+            <p class="secondline">Powered by TMDB</p>
+        </div>
+    </div>
+
+    <div id="light" class="white_content">
+        <div id ="close" onclick="closeDialog()">&#10006;</div>
+        <img id ="img_pop">
+        <div id ="Name_pop"></div>
+        <div id="YearAndType_pop"></div>
+        <div id ="Review_pop"></div>
+        <div id ="Detail_pop"></div>
+        <div id ="Language"></div>
+        <div id ="Cast"></div>
+        <div id ="NoCast" style="display:none">N/A</div>
+        <div class="grid-container" id="grid-container"></div>
+        <div id="Comments_title"></div>
+        <div id="NoComments" style="display:none">N/A</div>
+        <div id="Comments">
+<!--            <div class="ReviewerAndTime"></div>-->
+<!--            <div class="Rate"></div>-->
+<!--            <div class="Review_Content"></div>-->
+
+        </div>
+    </div>
+    <div id="fade" class="black_overlay"></div>
+
+<!--    <div class="footer">-->
+<!--        <p class="firstline">Designed and developed by Wei Zhang</p>-->
+<!--        <p class="secondline">Powered by TMDB</p>-->
+<!--    </div>-->
+<script src ="GetJSONFromDB.js"></script>
+<script>
+    document.getElementById("toggle1").addEventListener("click",function(event){
+        event.preventDefault()
+    });
+    document.getElementById("toggle2").addEventListener("click",function(event){
+        event.preventDefault()
+    });
+    document.getElementById("myForm").addEventListener("submit",function(event){
+        event.preventDefault()
+    });
+    function Home(){
+        var hometoggle = document.getElementsByClassName("homeToggle");
+        var searchtoggle = document.getElementsByClassName("searchToggle");
+        for(var i=0;i<hometoggle.length;i++){
+            hometoggle[i].style.color = "#ab0b09";
+        }
+        for(var i=0;i<searchtoggle.length;i++){
+            searchtoggle[i].style.color = "white";
+        }
+        document.getElementById("rightpage_home").style.display= "block";
+        document.getElementById("rightpage_search").style.display= "none";
+        document.getElementById("search_results").style.display= "none";
+        document.getElementById("toggle1").style.borderBottom ="1px solid white";
+        document.getElementById("toggle2").style.borderBottom ="0px";
+        ClearBtn();
+    }
+
+    function Search(){
+        var hometoggle =document.getElementsByClassName("homeToggle");
+        var searchtoggle= document.getElementsByClassName("searchToggle");
+        for(var i=0;i<hometoggle.length;i++){
+            hometoggle[i].style.color = "white";
+        }
+        for(var i=0;i<searchtoggle.length;i++){
+            searchtoggle[i].style.color = "#ab0b09";
+        }
+        document.getElementById("rightpage_search").style.display= "block";
+        document.getElementById("rightpage_home").style.display= "none";
+        document.getElementById("search_results").style.display= "block";
+        document.getElementById("toggle1").style.borderBottom ="0px";
+        document.getElementById("toggle2").style.borderBottom ="1px solid white";
+    }
+    // For clear button
+    document.getElementById("clear").addEventListener("mouseover",function(){
+        document.getElementById("clear").style.backgroundColor="#ab0b09";
+    });
+    document.getElementById("clear").addEventListener("mouseout",function(){
+        document.getElementById("clear").style.backgroundColor="black";
+    });
+
+    // For search button
+    document.getElementById("submit").addEventListener("mouseover",function(){
+        document.getElementById("submit").style.backgroundColor="#ab0b09";
+    });
+    document.getElementById("submit").addEventListener("mouseout",function(){
+        document.getElementById("submit").style.backgroundColor="black";
+    });
+
+    // For empty search
+    function emptyAlert(){
+        var keyword = document.getElementById("keyword").value;
+        var catelog =document.getElementById("Category").value;
+        if (keyword.length == 0 || catelog=="none"){
+            alert("Please enter valid values.")
+        }
+
+    }
+    function ClearBtn(){
+        document.getElementById("myForm").reset();
+        document.getElementById("showresults").style.display="none";
+        document.getElementById("search_results").innerHTML="";
+        document.getElementById("notfound").style.display="none";
+        document.getElementById("empty").style.display = "block";
+    }
+
+</script>
+</body>
+</html>
